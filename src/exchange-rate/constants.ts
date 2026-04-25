@@ -1,1 +1,0 @@
-export const MONOBANK_ER_KEY = "MONOBANK:ER"

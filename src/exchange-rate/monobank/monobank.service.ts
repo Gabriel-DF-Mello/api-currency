@@ -5,7 +5,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { MonobankGetCurrencyResponse } from './monobank.type';
 import type { Cache } from 'cache-manager';
-import { MONOBANK_ER_KEY as MONOBANK_EXCHANGE_RATES_KEY } from 'src/exchange-rate/constants';
+import { CACHE } from 'src/constants';
 import * as currencyCodes from 'currency-codes';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class MonobankService implements ExchangeRateProvider {
 	) {}
 
 	private async getAllExchangeRates(): Promise<MonobankGetCurrencyResponse> {
-		const rates = await this.cacheManager.get<MonobankGetCurrencyResponse>(MONOBANK_EXCHANGE_RATES_KEY)
+		const rates = await this.cacheManager.get<MonobankGetCurrencyResponse>(CACHE.EXCHANGE_RATES.MONOBANK)
 		if(rates){
 			return rates
 		}
@@ -27,7 +27,7 @@ export class MonobankService implements ExchangeRateProvider {
 		const response$ = this.httpService.get(`${baseUrl}/bank/currency`);
 		const response = await firstValueFrom(response$);
 
-		await this.cacheManager.set(MONOBANK_EXCHANGE_RATES_KEY, response.data)
+		await this.cacheManager.set(CACHE.EXCHANGE_RATES.MONOBANK, response.data)
 
 		return response.data
 	}
