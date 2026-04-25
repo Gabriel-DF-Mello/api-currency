@@ -46,9 +46,8 @@ describe('AppController (e2e)', () => {
   });
 
 	describe('Currency', () => {
-    describe('Convert currency', () => {
+    describe('convertCurrency', () => {
       it('should convert the currency', () => {
-
         const dto = {
 					original_currency: "USD",
 					new_currency: "EUR",
