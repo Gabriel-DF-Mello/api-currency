@@ -4,7 +4,6 @@ import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 import { ConfigService } from '@nestjs/config';
 import * as pactum from 'pactum';
-import { ConvertCurrencyDto } from 'src/currency/dto';
 import { CacheModule } from '@nestjs/cache-manager';
 import { HttpService } from '@nestjs/axios';
 import { of } from 'rxjs';

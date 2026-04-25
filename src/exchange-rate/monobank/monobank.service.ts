@@ -1,6 +1,6 @@
 import { HttpException, Inject, Injectable, Logger, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { ExchangeRateProvider, ExchangeRate } from '../exchange-rate-provider.abstract';
-import { catchError, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { MonobankGetCurrencyResponse } from './monobank.type';
