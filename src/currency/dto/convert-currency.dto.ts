@@ -15,7 +15,7 @@ export class ConvertCurrencyDto {
     newCurrency!: string;
   
     @IsNotEmpty()
-    @IsNumber()
+    @IsNumber({ maxDecimalPlaces: 2 }, { message: 'amount must have at most 2 decimal places' })
     @IsPositive()
     amount!: number;
   }

@@ -14,9 +14,11 @@ export class CurrencyService {
 			newCurrency,
 		);
 
+		const newAmount = amount * exchangeRate.rate
+
 		return {
 			currency: newCurrency,
-			amount: amount * exchangeRate.rate
+			amount: Number(newAmount.toFixed(2))
 		}
 	}
 }
