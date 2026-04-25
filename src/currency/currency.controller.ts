@@ -9,8 +9,8 @@ export class CurrencyController {
 		/*
 		Example:
 		body: {
-			"original_currency": "USD"
-			"new_currency": "EUR"
+			"source_currency": "USD"
+			"target_currency": "EUR"
 			"amount": 300
 		}
 		response: {

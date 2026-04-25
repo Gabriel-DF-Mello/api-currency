@@ -34,24 +34,24 @@ export class MonobankService implements ExchangeRateProvider {
 	}
 
 	async getExchangeRate(
-		originalCurrency: string,
-		newCurrency: string
+		sourceCurrency: string,
+		targetCurrency: string
 	): Promise<ExchangeRate> {
 		try{
-			const originalCurrencyNumber = currencyCodes.code(originalCurrency)?.number;
-			const newCurrencyNumber = currencyCodes.code(newCurrency)?.number;
+			const sourceCurrencyNumber = currencyCodes.code(sourceCurrency)?.number;
+			const targetCurrencyNumber = currencyCodes.code(targetCurrency)?.number;
 
 			const rates = await this.getAllExchangeRates()
 
 			const matchingRate = rates.find(
 				(rate) =>
-					(rate.currencyCodeA.toString() === originalCurrencyNumber && rate.currencyCodeB.toString() === newCurrencyNumber) ||
-					(rate.currencyCodeA.toString() === newCurrencyNumber && rate.currencyCodeB.toString() === originalCurrencyNumber),
+					(rate.currencyCodeA.toString() === sourceCurrencyNumber && rate.currencyCodeB.toString() === targetCurrencyNumber) ||
+					(rate.currencyCodeA.toString() === targetCurrencyNumber && rate.currencyCodeB.toString() === sourceCurrencyNumber),
 			);
 
 			if (!matchingRate) {
 				throw new NotFoundException(
-					`Could not find exchange rate between ${originalCurrency} and ${newCurrency}`,
+					`Could not find exchange rate between ${sourceCurrency} and ${targetCurrency}`,
 				);
 			}
 
@@ -59,7 +59,7 @@ export class MonobankService implements ExchangeRateProvider {
 				if ('rateCross' in matchingRate) {
 					rate = matchingRate.rateCross;
 				} else if (
-					matchingRate.currencyCodeA.toString() === originalCurrencyNumber
+					matchingRate.currencyCodeA.toString() === sourceCurrencyNumber
 				) {
 					rate = matchingRate.rateBuy;
 				} else {

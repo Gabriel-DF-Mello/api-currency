@@ -49,8 +49,8 @@ describe('AppController (e2e)', () => {
     describe('convertCurrency', () => {
       it('should convert the currency', () => {
         const dto = {
-					original_currency: "USD",
-					new_currency: "EUR",
+					source_currency: "USD",
+					target_currency: "EUR",
 					amount: 300
         };
         return pactum
@@ -58,13 +58,13 @@ describe('AppController (e2e)', () => {
           .post('/currency/convert')
           .withBody(dto)
           .expectStatus(201)
-          .expectBodyContains(dto.new_currency)
+          .expectBodyContains(dto.target_currency)
       });
 
 			it('should fail due to missing field', () => {
         const dto = {
-					original_currency: "USD",
-					new_currency: "EUR",
+					source_currency: "USD",
+					target_currency: "EUR",
         };
         return pactum
           .spec()
@@ -75,8 +75,8 @@ describe('AppController (e2e)', () => {
 
 			it('should should fail due to invalid currency', () => {
         const dto = {
-					original_currency: "USD",
-					new_currency: "NONE",
+					source_currency: "USD",
+					target_currency: "NONE",
 					amount: 400
         };
         return pactum
@@ -88,8 +88,8 @@ describe('AppController (e2e)', () => {
 
 			it('should should fail due to invalid amount', () => {
         const dto = {
-					original_currency: "USD",
-					new_currency: "EUR",
+					source_currency: "USD",
+					target_currency: "EUR",
 					amount: 400.2093
         };
         return pactum
@@ -101,8 +101,8 @@ describe('AppController (e2e)', () => {
 
 			it('should should fail due to conversion not being available', () => {
         const dto = {
-					original_currency: "USD",
-					new_currency: "BRL",
+					source_currency: "USD",
+					target_currency: "BRL",
 					amount: 400
         };
         return pactum

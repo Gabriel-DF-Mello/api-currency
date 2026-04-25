@@ -37,8 +37,8 @@ describe('CurrencyController', () => {
       };
 
       const dto: ConvertCurrencyDto = {
-        originalCurrency: 'USD',
-        newCurrency: 'EUR',
+        sourceCurrency: 'USD',
+        targetCurrency: 'EUR',
 				amount: 100,
       };
 

@@ -4,8 +4,8 @@ export type ExchangeRate = {
   
   export abstract class ExchangeRateProvider {
     abstract getExchangeRate(
-      originalCurrency: string,
-      newCurrency: string,
+      sourceCurrency: string,
+      targetCurrency: string,
     ): Promise<ExchangeRate>;
   }
   

@@ -7,17 +7,17 @@ export class CurrencyService {
 	constructor(private exchangeRateProvider: ExchangeRateProvider) {}
 
 	async convertCurrency(dto: ConvertCurrencyDto){
-		const { originalCurrency, newCurrency, amount } = dto;
+		const { sourceCurrency, targetCurrency, amount } = dto;
 
 		const exchangeRate = await this.exchangeRateProvider.getExchangeRate(
-			originalCurrency,
-			newCurrency,
+			sourceCurrency,
+			targetCurrency,
 		);
 
 		const newAmount = amount * exchangeRate.rate
 
 		return {
-			currency: newCurrency,
+			currency: targetCurrency,
 			amount: Number(newAmount.toFixed(2))
 		}
 	}

@@ -2,17 +2,17 @@ import { Expose } from "class-transformer";
 import { IsISO4217CurrencyCode, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 
 export class ConvertCurrencyDto {
-    @Expose({ name: 'original_currency' })
+    @Expose({ name: 'source_currency' })
     @IsNotEmpty()
     @IsString()
     @IsISO4217CurrencyCode()
-    originalCurrency!: string;
+    sourceCurrency!: string;
   
-    @Expose({ name: 'new_currency' })
+    @Expose({ name: 'target_currency' })
     @IsNotEmpty()
     @IsString()
     @IsISO4217CurrencyCode()
-    newCurrency!: string;
+    targetCurrency!: string;
   
     @IsNotEmpty()
     @IsNumber({ maxDecimalPlaces: 2 }, { message: 'amount must have at most 2 decimal places' })
