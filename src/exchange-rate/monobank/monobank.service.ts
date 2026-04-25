@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { ExchangeRateProvider, ExchangeRate } from '../exchange-rate-provider.abstract';
 import { catchError, firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
@@ -10,6 +10,7 @@ import * as currencyCodes from 'currency-codes';
 
 @Injectable()
 export class MonobankService implements ExchangeRateProvider {
+	private readonly logger = new Logger(MonobankService.name);
 
 	constructor(
 		private readonly httpService: HttpService,
@@ -36,37 +37,54 @@ export class MonobankService implements ExchangeRateProvider {
 		originalCurrency: string,
 		newCurrency: string
 	): Promise<ExchangeRate> {
+		try{
+			const originalCurrencyNumber = currencyCodes.code(originalCurrency)?.number;
+			const newCurrencyNumber = currencyCodes.code(newCurrency)?.number;
 
-		const originalCurrencyNumber = currencyCodes.code(originalCurrency)?.number;
-    const newCurrencyNumber = currencyCodes.code(newCurrency)?.number;
+			const rates = await this.getAllExchangeRates()
 
-		const rates = await this.getAllExchangeRates()
-
-		const matchingRate = rates.find(
-			(rate) =>
-				(rate.currencyCodeA.toString() === originalCurrencyNumber && rate.currencyCodeB.toString() === newCurrencyNumber) ||
-				(rate.currencyCodeA.toString() === newCurrencyNumber && rate.currencyCodeB.toString() === originalCurrencyNumber),
-		);
-
-		if (!matchingRate) {
-			throw new NotFoundException(
-				`Could not find exchange rate between ${originalCurrency} and ${newCurrency}`,
+			const matchingRate = rates.find(
+				(rate) =>
+					(rate.currencyCodeA.toString() === originalCurrencyNumber && rate.currencyCodeB.toString() === newCurrencyNumber) ||
+					(rate.currencyCodeA.toString() === newCurrencyNumber && rate.currencyCodeB.toString() === originalCurrencyNumber),
 			);
-		}
 
-		 let rate: number;
-			if ('rateCross' in matchingRate) {
-				rate = matchingRate.rateCross;
-			} else if (
-				matchingRate.currencyCodeA.toString() === originalCurrencyNumber
-			) {
-				rate = matchingRate.rateBuy;
-			} else {
-				rate = 1 / matchingRate.rateSell;
+			if (!matchingRate) {
+				throw new NotFoundException(
+					`Could not find exchange rate between ${originalCurrency} and ${newCurrency}`,
+				);
 			}
 
-		return {
-			rate
+			let rate: number;
+				if ('rateCross' in matchingRate) {
+					rate = matchingRate.rateCross;
+				} else if (
+					matchingRate.currencyCodeA.toString() === originalCurrencyNumber
+				) {
+					rate = matchingRate.rateBuy;
+				} else {
+					rate = 1 / matchingRate.rateSell;
+				}
+
+			return {
+				rate
+			}
+		} catch (error) {
+			if (error instanceof HttpException) {
+				this.logger.warn(
+					`Could not get exchange rates from monobank API: ${error.message}`,
+				);
+				throw error;
+			}
+
+			this.logger.error(
+				'Could not get exchange rates from monobank API:',
+				error,
+			);
+
+			throw new ServiceUnavailableException('Internal server error', {
+				description: 'Error on exchange rate API',
+			});
 		}
 	}
 }
