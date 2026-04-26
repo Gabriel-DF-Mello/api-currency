@@ -41,27 +41,27 @@ $ npm run test:cov
 The project has 2 endpoints which are as follows:
 
 ### Convert currency:
-request:
+POST request:
 ```sh
-   curl --location 'localhost:3000/currency/convert' \
-	--header 'Content-Type: application/json' \
-	--data '{
-			"source_currency": "USD",
-			"target_currency": "EUR",
-			"amount": 100.15
-	}'
+   curl --location --request POST 'localhost:3000/currency/convert' \
+		--header 'Content-Type: application/json' \
+		--data '{
+				"source_currency": "USD",
+				"target_currency": "EUR",
+				"amount": 100
+		}'
 ```
 
 response: 
 ```json
 	{
-	"currency": "EUR",
-	"amount": 85.11
+		"currency": "EUR",
+		"amount": 85.11
 	}
 ```
 
 ### Health check: 
-request:
+GET request:
 ```sh
-	curl --location 'localhost:3000/health'
+	curl --location --request GET 'localhost:3000/health'
 ```
