@@ -6,6 +6,8 @@ import { HealthModule } from './health/health.module';
 import KeyvRedis from '@keyv/redis';
 import { Keyv } from 'keyv';
 import { KeyvCacheableMemory } from 'cacheable';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -25,10 +27,25 @@ import { KeyvCacheableMemory } from 'cacheable';
         };
 			},
     }),
+		ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          ttl: config.get<number>('THROTTLE_TTL') || 1000,
+          limit: config.get<number>('THROTTLE_LIMIT') || 5,
+        },
+      ],
+    }),
     CurrencyModule,
     HealthModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+		{
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+	],
 })
 export class AppModule {}
