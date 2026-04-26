@@ -41,7 +41,7 @@ $ npm run test:cov
 The project has 2 endpoints which are as follows:
 
 ### Convert currency:
-POST request:
+POST request example:
 ```sh
    curl --location --request POST 'localhost:3000/currency/convert' \
 		--header 'Content-Type: application/json' \
@@ -52,7 +52,7 @@ POST request:
 		}'
 ```
 
-response: 
+response example: 
 ```json
 	{
 		"currency": "EUR",
@@ -61,7 +61,7 @@ response:
 ```
 
 ### Health check: 
-GET request:
+GET request example:
 ```sh
 	curl --location --request GET 'localhost:3000/health'
 ```
