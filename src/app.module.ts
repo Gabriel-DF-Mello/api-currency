@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { CurrencyModule } from './currency/currency.module';
-import { redisStore } from 'cache-manager-redis-yet';
+import { HealthModule } from './health/health.module';
+import KeyvRedis from '@keyv/redis';
+import { Keyv } from 'keyv';
+import { KeyvCacheableMemory } from 'cacheable';
 
 @Module({
   imports: [
@@ -11,15 +14,19 @@ import { redisStore } from 'cache-manager-redis-yet';
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        ttl: configService.get<number>('CACHE_TTL'),
-        store: redisStore,
-        host: configService.get<string>('REDIS_HOST'),
-				port: configService.get<string>('REDIS_PORT'),
-				password: configService.get<string>('REDIS_PASSWORD'),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        return {
+          stores: [
+            new Keyv({
+              store: new KeyvCacheableMemory({ ttl: configService.get<string>('CACHE_TTL'), lruSize: 5000 }),
+            }),
+            new KeyvRedis(configService.get<string>('REDIS_URL')),
+          ],
+        };
+			},
     }),
-    CurrencyModule
+    CurrencyModule,
+    HealthModule
   ],
   controllers: [],
   providers: [],

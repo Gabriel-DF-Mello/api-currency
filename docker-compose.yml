@@ -5,7 +5,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    command: redis-server --requirepass "admin" --appendonly yes
+    command: redis-server --requirepass "admin"
     volumes:
       - redis_data:/data
 
