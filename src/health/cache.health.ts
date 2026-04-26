@@ -19,7 +19,9 @@ export class CacheHealthIndicator {
 
 			const check = new Promise((resolve) => {
 				const isHealthy = this.cacheManager.set('health-check', 'ok', 1000);
-				resolve(isHealthy)
+				if(isHealthy) {
+					resolve(isHealthy)
+				}
 			});
 
 			return Promise.race([check, timeout])
