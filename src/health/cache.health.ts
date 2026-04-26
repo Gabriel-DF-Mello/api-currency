@@ -14,7 +14,7 @@ export class CacheHealthIndicator {
 
     try {
 			const timeout = new Promise((_, reject) => {
-				setTimeout(() => reject(new Error("Request timed out after 5 seconds")), 5000);
+				setTimeout(() => reject(new Error("Request timed out after 10 seconds")), 10000);
 			});
 
 			const check = new Promise((resolve) => {
@@ -26,9 +26,9 @@ export class CacheHealthIndicator {
 
 			return Promise.race([check, timeout])
 			.then(() => { return indicator.up() })
-			.catch(() => { return indicator.down('Unable to set cache health-check') });
+			.catch(() => { return indicator.down('Cache health check failed') });
     } catch (error) {
-      return indicator.down('Unable to set cache health-check');
+      return indicator.down('Found error during cache health check');
     }
   }
 }
